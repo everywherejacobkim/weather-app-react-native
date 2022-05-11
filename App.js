@@ -12,9 +12,10 @@ export default function App() {
           </Text>
       </View>
       <View style={styles.weather}>
-          <Text>
-            Weather
-          </Text>
+          <View style={styles.day}>
+            <Text style={styles.temp}>27</Text>
+            <Text style={styles.desc}>Sunny</Text>
+          </View>
       </View>
       
     </View>
@@ -24,23 +25,31 @@ export default function App() {
 const styles = StyleSheet.create({
   container : {
     flex: 1, 
-    backgroundColor: 'black'
+    backgroundColor: 'skyblue'
   },
   city: {
-    flex: 1,
-    backgroundColor: 'tomato',
+    flex: 1.2,
     justifyContent: 'center',
     alignItems: 'center',
   }, 
   cityName: {
     color: 'black',
-    fontWeight: 'bold',
+    fontWeight: '600',
     fontSize: 68,
   },
   weather: {
+    flex: 3,
+  },
+  day: {
     flex: 1,
-    backgroundColor: 'skyblue',
-    justifyContent: 'center',
     alignItems: 'center',
+  },
+  temp: {
+    fontSize: 175,
+    marginTop: 50,
+  },
+  desc: {
+    fontSize: 50,
+    marginTop: -30,
   }
 })
