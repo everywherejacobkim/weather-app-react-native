@@ -1,5 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
+
+const {width:SCREEN_WIDTH, height:SCREEN_HEIGHT} = Dimensions.get("window");
+console.log(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 export default function App() {
   return (
@@ -11,12 +14,20 @@ export default function App() {
             Seoul
           </Text>
       </View>
-      <View style={styles.weather}>
+      <ScrollView horizontal contentContainertyle={styles.weather}>
           <View style={styles.day}>
             <Text style={styles.temp}>27</Text>
             <Text style={styles.desc}>Sunny</Text>
           </View>
-      </View>
+          <View style={styles.day}>
+            <Text style={styles.temp}>27</Text>
+            <Text style={styles.desc}>Sunny</Text>
+          </View>
+          <View style={styles.day}>
+            <Text style={styles.temp}>27</Text>
+            <Text style={styles.desc}>Sunny</Text>
+          </View>
+      </ScrollView>
       
     </View>
   );
@@ -38,15 +49,16 @@ const styles = StyleSheet.create({
     fontSize: 68,
   },
   weather: {
-    flex: 3,
+
   },
   day: {
-    flex: 1,
+    
     alignItems: 'center',
   },
   temp: {
     fontSize: 175,
     marginTop: 50,
+    marginLeft: 20,
   },
   desc: {
     fontSize: 50,
