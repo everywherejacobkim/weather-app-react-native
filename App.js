@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
+import * as Location from 'expo-location';
 
 const {width:SCREEN_WIDTH, height:SCREEN_HEIGHT} = Dimensions.get("window");
 
 export default function App() {
+
+  const [location, setLocation] = useState([]);
+  const [ok, setOk] = useState(true);
+  const getPermissions = async() => {
+    const granted = await Location.requestForegroundPermissionsAsync();
+    if (!granted) {
+      setOk(false);
+    }
+  }
+
+  useEffect(()=>{
+    getPermissions();
+  }, []);
+  
+
   return (
     
     <View style={styles.container}>
@@ -13,7 +29,7 @@ export default function App() {
             Seoul
           </Text>
       </View>
-      
+
       <ScrollView 
         horizontal 
         pagingEnabled 
