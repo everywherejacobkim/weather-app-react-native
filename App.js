@@ -1,22 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import * as Location from 'expo-location';
+import { DynamicColorIOS } from 'react-native/Libraries/StyleSheet/PlatformColorValueTypesIOS';
 
 const {width:SCREEN_WIDTH, height:SCREEN_HEIGHT} = Dimensions.get("window");
+const API_KEY = 'a547490d7e1a6cc61d752508bf272726';
 
 export default function App() {
 
-  const [location, setLocation] = useState([]);
   const [ok, setOk] = useState(true);
-  const getPermissions = async() => {
+  const [city, setCity] = useState("Loading...");
+  const [weatherData, setWeatherData] = useState([]);
+
+  const getWeather = async() => {
     const granted = await Location.requestForegroundPermissionsAsync();
     if (!granted) {
       setOk(false);
     }
+    const {coords:{latitude, longitude}} = await Location.getCurrentPositionAsync({accuracy: 5})
+    const location = await Location.reverseGeocodeAsync({latitude, longitude}, {useGoogleMaps:false});
+    setCity(location[0].city);
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=alerts&appid=${API_KEY}`)
+    const json = await response.json();
+    setWeatherData(json.daily);
+   
   }
 
   useEffect(()=>{
-    getPermissions();
+    getWeather();
   }, []);
   
 
@@ -26,7 +38,7 @@ export default function App() {
       
       <View style={styles.city}>
           <Text style={styles.cityName}>
-            Seoul
+            {city}
           </Text>
       </View>
 
@@ -36,18 +48,18 @@ export default function App() {
         showsHorizontalScrollIndicator={false} 
         contentContainerStyle={styles.weather}>
         
-          <View style={styles.day}>
-            <Text style={styles.temp}>27</Text>
-            <Text style={styles.desc}>Sunny</Text>
-          </View>
-          <View style={styles.day}>
-            <Text style={styles.temp}>27</Text>
-            <Text style={styles.desc}>Sunny</Text>
-          </View>
-          <View style={styles.day}>
-            <Text style={styles.temp}>27</Text>
-            <Text style={styles.desc}>Sunny</Text>
-          </View>
+        {weatherData.length === 0 
+        ? 
+        <View style={[styles.indicator, styles.horizontal]}>
+          <ActivityIndicator size="large" color="#00ff00" />
+        </View>
+        : 
+        <View style={styles.day}>
+          <Text style={styles.temp}>27</Text>
+          <Text style={styles.desc}>Sunny</Text>
+        </View>
+        }
+          
 
       </ScrollView>
       
@@ -85,5 +97,14 @@ const styles = StyleSheet.create({
   desc: {
     fontSize: 50,
     marginTop: -30,
-  }
+  },
+  indicator: {
+    flex: 1,
+    justifyContent: "center"
+  },
+  horizontal: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10
+  },
 })
