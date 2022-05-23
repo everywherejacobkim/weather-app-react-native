@@ -4,7 +4,7 @@ import * as Location from 'expo-location';
 import { DynamicColorIOS } from 'react-native/Libraries/StyleSheet/PlatformColorValueTypesIOS';
 
 const {width:SCREEN_WIDTH, height:SCREEN_HEIGHT} = Dimensions.get("window");
-const API_KEY = 'a547490d7e1a6cc61d752508bf272726';
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 export default function App() {
 
@@ -20,6 +20,7 @@ export default function App() {
     const {coords:{latitude, longitude}} = await Location.getCurrentPositionAsync({accuracy: 5})
     const location = await Location.reverseGeocodeAsync({latitude, longitude}, {useGoogleMaps:false});
     setCity(location[0].city);
+
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=alerts&appid=${API_KEY}`)
     const json = await response.json();
