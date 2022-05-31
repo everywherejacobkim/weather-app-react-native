@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import * as Location from 'expo-location';
-import { DynamicColorIOS } from 'react-native/Libraries/StyleSheet/PlatformColorValueTypesIOS';
 
 const {width:SCREEN_WIDTH, height:SCREEN_HEIGHT} = Dimensions.get("window");
-const API_KEY = process.env.REACT_APP_API_KEY;
+const API_KEY = "a547490d7e1a6cc61d752508bf272726";
 
 export default function App() {
 
@@ -13,19 +12,26 @@ export default function App() {
   const [weatherData, setWeatherData] = useState([]);
 
   const getWeather = async() => {
-    const granted = await Location.requestForegroundPermissionsAsync();
+    const {granted} = await Location.requestForegroundPermissionsAsync();
     if (!granted) {
       setOk(false);
     }
-    const {coords:{latitude, longitude}} = await Location.getCurrentPositionAsync({accuracy: 5})
-    const location = await Location.reverseGeocodeAsync({latitude, longitude}, {useGoogleMaps:false});
+
+    const {
+      coords:{latitude, longitude},
+    } = await Location.getCurrentPositionAsync({accuracy: 5})
+    
+    const location = await Location.reverseGeocodeAsync(
+      {latitude, longitude}, 
+      {useGoogleMaps:false}
+    );
+    
     setCity(location[0].city);
 
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=alerts&appid=${API_KEY}`)
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=alerts&appid=${API_KEY}&units=metric`)
     const json = await response.json();
     setWeatherData(json.daily);
-   
   }
 
   useEffect(()=>{
@@ -50,15 +56,21 @@ export default function App() {
         contentContainerStyle={styles.weather}>
         
         {weatherData.length === 0 
-        ? 
-        <View style={[styles.indicator, styles.horizontal]}>
-          <ActivityIndicator size="large" color="#00ff00" />
-        </View>
-        : 
+        ? (
         <View style={styles.day}>
-          <Text style={styles.temp}>27</Text>
-          <Text style={styles.desc}>Sunny</Text>
-        </View>
+          <ActivityIndicator size="large" color="#fff" style={{marginTop:10}} />
+        </View> 
+        )
+        : (
+          weatherData.map((day, index)=>
+            <View key={index} style={styles.day}>
+              <Text style={styles.temp}>{parseFloat(day.temp.day).toFixed(1)}</Text>
+              <Text style={styles.desc}>{day.weather[0].main}</Text>
+              <Text style={styles.descText}>{day.weather[0].description}</Text>
+            </View>
+          )
+        ) 
+        
         }
           
 
@@ -74,7 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'skyblue'
   },
   city: {
-    flex: 1.2,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   }, 
@@ -91,17 +103,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   temp: {
-    fontSize: 175,
-    marginTop: 50,
-    marginLeft: 20,
+    fontSize: 160,
+    marginTop: 20,
+    fontWeight: 800,
   },
   desc: {
     fontSize: 50,
     marginTop: -30,
   },
+  descText: {
+    fontSize: 20,
+  },
   indicator: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   horizontal: {
     flexDirection: "row",
