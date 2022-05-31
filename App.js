@@ -83,7 +83,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container : {
     flex: 1, 
-    backgroundColor: 'skyblue'
+    backgroundColor: 'slateblue',
   },
   city: {
     flex: 1,
@@ -91,28 +91,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   }, 
   cityName: {
-    color: 'black',
+    color: '#fff',
     fontWeight: '600',
     fontSize: 68,
   },
-  weather: {
-
-  },
   day: {
     width: SCREEN_WIDTH,
-    alignItems: 'center',
+    alignItems: 'left',
+    marginLeft: 30,
   },
   temp: {
-    fontSize: 160,
-    marginTop: 20,
-    fontWeight: 800,
+    fontSize: 80,
+    marginTop: 60,
+    color: '#fff',
   },
   desc: {
-    fontSize: 50,
-    marginTop: -30,
+    fontSize: 30,
+    marginLeft: 5,
+    color: '#fff',
   },
   descText: {
     fontSize: 20,
+    color: '#fff',
+    marginLeft: 5,
   },
   indicator: {
     flex: 1,
